@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <!--<string name="app_id">209667130274</string>-->
+
+    <string name="achievement_lose1kg">CgkIooeKiY0GEAIQAA</string>
+    <string name="achievement_lose2kg">CgkIooeKiY0GEAIQAQ</string>
+    <string name="achievement_lose5kg">CgkIooeKiY0GEAIQAg</string>
+    <string name="achievement_lose10kg">CgkIooeKiY0GEAIQAw</string>
+
+    <string name="leaderboard_lossboard">CgkIooeKiY0GEAIQBA</string>
+</resources>

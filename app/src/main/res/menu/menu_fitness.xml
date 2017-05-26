@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="alli.bellevue.com.foreverfitness.summary">
+    <item
+        android:id="@+id/action_profile"
+        android:title="@string/action_profile"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/details_menu_item"
+        android:title="@string/details"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/history_menu_item"
+        android:title="@string/weight_log"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/entry_menu_item"
+        android:title="@string/add_log"
+        app:showAsAction="never"/>
+
+</menu>
