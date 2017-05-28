@@ -16,6 +16,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.toString();
     public static final double KGS_TO_LBS = 2.20462;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 4664;
     private TextView weight;
     private TextView target_weight;
     private TextView target_date;
@@ -42,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean kgs = true;
     private TextView weight_difference;
     public static final double LBS_TO_KGS = 0.453592;
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +164,22 @@ public class MainActivity extends AppCompatActivity {
         } else {
             user_icon.setImageResource(R.drawable.female);
         }
+
+    }
+
+    private boolean checkPlayServices() {
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int result = googleAPI.isGooglePlayServicesAvailable(this);
+        if(result != ConnectionResult.SUCCESS) {
+            if(googleAPI.isUserResolvableError(result)) {
+                googleAPI.getErrorDialog(this, result,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     private String getInstallDate() {

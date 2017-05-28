@@ -103,6 +103,10 @@ public class DetailsActivity extends AppCompatActivity {
             editor.putBoolean(UNITS, true);
             editor.apply();
         }
+//        else{
+//            male_option.setChecked(gender);
+//            female_option.setChecked(!gender);
+//        }
 
 
         save_button.setOnClickListener(new View.OnClickListener() {

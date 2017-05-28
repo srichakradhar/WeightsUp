@@ -2,6 +2,8 @@ package chuckree.weightsup;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -29,6 +31,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -36,8 +39,12 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import chuckree.weightsup.data.WeightLogContract;
 import chuckree.weightsup.data.WeightLogDbHelper;
@@ -45,13 +52,19 @@ import chuckree.weightsup.data.WeightLogDbHelper;
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static chuckree.weightsup.DetailsActivity.DATE_DIALOG_ID;
 import static chuckree.weightsup.DetailsActivity.WEIGHT;
+import static chuckree.weightsup.R.id.target_date_edit_text;
 
 public class AddLogActivity extends AppCompatActivity {
 
     private static final String TAG = AddLogActivity.class.toString();
     private SQLiteDatabase mDb;
     private boolean kgs = true;
+    private int year;
+    private int month;
+    private int day;
+    private EditText current_date_edit_text;
 
     Bitmap progress_pic_bitmap;
     Uri progress_pic_uri;
@@ -70,6 +83,7 @@ public class AddLogActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_log);
 
         final EditText weight_log_edit_text = (EditText) findViewById(R.id.weight_log_edit_text);
+        current_date_edit_text = (EditText) findViewById(R.id.current_date_edit_text);
         Button add_log_button = (Button) findViewById(R.id.button_add_log);
         FloatingActionButton pic_fab = (FloatingActionButton) findViewById(R.id.pic_fab);
 
@@ -80,6 +94,8 @@ public class AddLogActivity extends AppCompatActivity {
         mDb = dbHelper.getWritableDatabase();
         kgs = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(DetailsActivity.UNITS, true);
 
+        current_date_edit_text.setText(R.string.today);
+
         pic_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,14 +105,21 @@ public class AddLogActivity extends AppCompatActivity {
             }
         });
 
+        current_date_edit_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(DATE_DIALOG_ID);
+            }
+        });
+
         add_log_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 try {
-                    addNewLog(Float.parseFloat(weight_log_edit_text.getText().toString()));
-                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
                     String weight = weight_log_edit_text.getText().toString().trim();
+                    addNewLog(Float.parseFloat(weight));
+                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
                     editor.putString(WEIGHT, kgs ? weight : String.valueOf(Double.parseDouble(weight) * MainActivity.LBS_TO_KGS));
                     editor.apply();
                     Toast.makeText(getApplicationContext(), "Successfully logged the weight", Toast.LENGTH_SHORT).show();
@@ -176,6 +199,11 @@ public class AddLogActivity extends AppCompatActivity {
         }
         Float lossGain = latestWeight == 0 ? 0 : latestWeight - weight;
         cv.put(WeightLogContract.WeightLogEntry.COLUMN_LOSS_GAIN, lossGain);
+        String today = new SimpleDateFormat("MM/dd/yyyy", Locale.US).format(new Date());
+        String user_date = current_date_edit_text.getText().toString();
+        if(!today.equals(user_date) && !user_date.equals(getString(R.string.today))){
+            cv.put(WeightLogContract.WeightLogEntry.COLUMN_TIMESTAMP, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(new Date(user_date)));
+        }
         if (progress_pic_uri != null)
             cv.put(WeightLogContract.WeightLogEntry.COLUMN_IMAGE_PATH, progress_pic_uri.toString());
         return mDb.insert(WeightLogContract.WeightLogEntry.TABLE_NAME, null, cv);
@@ -389,6 +417,43 @@ public class AddLogActivity extends AppCompatActivity {
                 .create()
                 .show();
     }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DATE_DIALOG_ID:
+                // set date picker as current date
+                final Calendar c = Calendar.getInstance();
+                year = c.get(Calendar.YEAR);
+                month = c.get(Calendar.MONTH);
+                day = c.get(Calendar.DAY_OF_MONTH);
+
+                return new DatePickerDialog(this, datePickerListener,
+                        year, month, day);
+        }
+        return null;
+    }
+
+    private DatePickerDialog.OnDateSetListener datePickerListener
+            = new DatePickerDialog.OnDateSetListener() {
+
+        // when dialog box is closed, below method will be called.
+        public void onDateSet(DatePicker view, int selectedYear,
+                              int selectedMonth, int selectedDay) {
+            year = selectedYear;
+            month = selectedMonth;
+            day = selectedDay;
+
+            // set selected date into EditText
+            current_date_edit_text.setText(new StringBuilder().append(month + 1)
+                    .append("/").append(day).append("/").append(year)
+                    .append(" "));
+
+            // set selected date into datepicker also
+//            date_picker.init(year, month, day, null);
+
+        }
+    };
 
     private boolean canMakeSmores() {
         return (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1);
