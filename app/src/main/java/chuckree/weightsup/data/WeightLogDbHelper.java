@@ -16,7 +16,7 @@ public class WeightLogDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "weightlog.db";
 
     // If you change the database schema, you must increment the database version
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     public WeightLogDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -28,7 +28,6 @@ public class WeightLogDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_WEIGHTLOG_TABLE = "CREATE TABLE " + WeightLogEntry.TABLE_NAME + " (" +
                 WeightLogEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 WeightLogEntry.COLUMN_WEIGHT + " FLOAT NOT NULL, " +
-                WeightLogEntry.COLUMN_LOSS_GAIN + " FLOAT NOT NULL, " +
                 WeightLogEntry.COLUMN_IMAGE_PATH + " TEXT, " +
                 WeightLogEntry.COLUMN_TIMESTAMP + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
                 "); ";

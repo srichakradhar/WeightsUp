@@ -111,8 +111,9 @@ public class WeightLogActivity extends AppCompatActivity {
             double weight = mCursor.getFloat(mCursor.getColumnIndex(WeightLogContract.WeightLogEntry.COLUMN_WEIGHT));
             String date = mCursor.getString(mCursor.getColumnIndex(WeightLogContract.WeightLogEntry.COLUMN_TIMESTAMP));
             long id = mCursor.getLong(mCursor.getColumnIndex(WeightLogContract.WeightLogEntry._ID));
-            double lossGain = mCursor.getFloat(mCursor.getColumnIndex(WeightLogContract.WeightLogEntry.COLUMN_LOSS_GAIN));
             String image_path = mCursor.getString(mCursor.getColumnIndex(WeightLogContract.WeightLogEntry.COLUMN_IMAGE_PATH));
+            mCursor.moveToPosition(position > 0 ? position - 1 : 0);
+            double lossGain = mCursor.getFloat(mCursor.getColumnIndex(WeightLogContract.WeightLogEntry.COLUMN_WEIGHT)) - weight;
 
             if(!kgs){
                 weight *= MainActivity.KGS_TO_LBS;

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.example.games.basegameutils.BaseGameActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

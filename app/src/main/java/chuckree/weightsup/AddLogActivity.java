@@ -197,8 +197,6 @@ public class AddLogActivity extends AppCompatActivity {
         } finally {
             mC.close();
         }
-        Float lossGain = latestWeight == 0 ? 0 : latestWeight - weight;
-        cv.put(WeightLogContract.WeightLogEntry.COLUMN_LOSS_GAIN, lossGain);
         String today = new SimpleDateFormat("MM/dd/yyyy", Locale.US).format(new Date());
         String user_date = current_date_edit_text.getText().toString();
         if(!today.equals(user_date) && !user_date.equals(getString(R.string.today))){
